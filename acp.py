@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from process_acp import Acp
 import re
+import time
 import pprint
 
 
@@ -23,15 +24,15 @@ class Run:
         self.but = Button(self.window, text="Open", command=self.open_file)
         self.but_start = Button(self.window, text="Start process", command=self.start)
         self.entry_npp = Entry(self.window, width=3)
-        self.entry_npp.grid(column=1, row=0)
+        self.entry_npp.grid(column=1, row=0, sticky=W)
         self.entry_npp.insert(0, "1")
         self.label_enter_npp = Label(self.window, text="Enter sort column:").grid(column=0, row=0)
         self.enrty_kd = Entry(self.window, width=3)
-        self.enrty_kd.grid(column=3, row=0)
+        self.enrty_kd.grid(column=3, row=0, sticky=W)
         self.enrty_kd.insert(0, "7")
         self.label_enter_kd = Label(self.window, text="Enter KD column:").grid(column=2, row=0)
         self.entry_bs = Entry(self.window, width=3)
-        self.entry_bs.grid(column=5, row=0)
+        self.entry_bs.grid(column=5, row=0, sticky=W)
         self.entry_bs.insert(0, "8")
         self.label_enter_bs = Label(self.window, text="Enter BS column:").grid(column=4, row=0)
 
@@ -50,24 +51,25 @@ class Run:
         entry_bs = int(self.entry_bs.get()) - 1
         self.label_wait.configure(text="Process is started. Please wait...")
         # get table from excel file
-        tb_title, tb_raw = self.acp.load_table_new(filepath=self.path, entry_npp=entry_npp)
+        tb_title, tb_raw = self.acp.load_table_new(filepath=self.path)
         # group by NPP
-        tb_by_npp = self.acp.group_by_npp(tb_raw)
+        tb_by_npp = self.acp.group_by_npp(tb_raw, entry_npp, entry_bs)
         # count unique companies
-        count_companies = self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp)
+        count_companies = self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp, enrty_kd=enrty_kd)
         # get specific_weight
-        tb_specific_waight = self.acp.specific_weight(tabl_by_npp=tb_by_npp)
+        tb_specific_waight = self.acp.specific_weight(tabl_by_npp=tb_by_npp, entry_kd=enrty_kd, entry_bs=entry_bs)
         # write file
-        f_w = re.sub(r'.xlsx|.xls', '_processed.xlsx', self.path)
-        self.acp.write_to_file_new(file_name=f_w, table=tb_specific_waight)
+        suffix = time.strftime("%Y_%m_%d_%H%M%S")
+        f_w = re.sub(r'.xlsx|.xls', '_processed_' + suffix + '.xlsx', self.path)
+        self.acp.write_to_file_new(file_name=f_w, table=tb_specific_waight, table_count=count_companies)
         self.label_done.configure(text="DONE")
 
     def run(self):
         self.label.grid(column=0, row=1)
         self.but.grid(column=1, row=1)
-        self.label_2.grid(column=0, row=2, columnspan=30)
-        self.label_wait.grid(column=0, row=3, columnspan=30)
-        self.label_done.grid(column=0, row=4, columnspan=30)
+        self.label_2.grid(column=0, row=2, columnspan=10)
+        self.label_wait.grid(column=0, row=3, columnspan=10)
+        self.label_done.grid(column=0, row=4, columnspan=10)
         self.window.mainloop()
 
 
