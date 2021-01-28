@@ -9,7 +9,7 @@ import pprint
 class Acp:
 
     @staticmethod
-    def load_table_new(filepath: str) -> Tuple[list, list]:
+    def load_table(filepath: str) -> Tuple[list, list]:
         wb = load_workbook(filepath)
         sheet = wb.active
         title = []
