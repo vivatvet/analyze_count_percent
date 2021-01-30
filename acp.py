@@ -2,6 +2,7 @@
 
 from tkinter import *
 from tkinter.filedialog import askopenfilename
+from tkinter import messagebox
 from process_acp import Acp
 from catalog import Catalog
 import re
@@ -22,6 +23,7 @@ class Run:
         self.catalog_path = ""
         self.catalog_content = []
         self.catalog_levels = []
+        self.rad_but = []
         self.window.geometry('700x450')
         self.window.title("ACP")
         self.selected = StringVar()
@@ -56,9 +58,14 @@ class Run:
         self.catalog_levels, self.catalog_content = self.catalog.get_catalog(filepath=self.catalog_path)
         # self.label_enter_npp.grid_remove()
         # self.entry_npp.grid_remove()
+
+        for rb in self.rad_but:
+            rb.grid_remove()
+        self.rad_but = []
         i = 0
         for catalog_level in self.catalog_levels:
-            Radiobutton(self.window, text=catalog_level, value=catalog_level, variable=self.selected).grid(column=6, row=i, sticky=W)
+            self.rad_but.append(Radiobutton(self.window, text=catalog_level, value=catalog_level, variable=self.selected))
+            self.rad_but[i].grid(column=6, row=i, sticky=W)
             i += 1
 
     def start(self):
@@ -73,14 +80,20 @@ class Run:
         tb_title, tb_raw = self.acp.load_table(filepath=self.path)
         # redefined tb_raw and entry_npp
         if self.catalog_path != "" and self.selected.get() != "":
-            entry_npp, tb_raw = self.catalog.rebuild_tabl(
+            res, entry_npp, tb_raw, not_found_codes = self.catalog.rebuild_tabl(
                 entry_npp=entry_npp,
                 selected_level=self.selected.get(),
                 levels=self.catalog_levels,
                 catalog_content=self.catalog_content,
                 raw_tabl=tb_raw)
+            if not res:
+                message = "\n".join(not_found_codes)
+                messagebox.showerror(title="ERROR", message="Was not fount in catalogue:\n" + message)
+                self.label_wait.configure(text="")
+                return
         # group by NPP
         tb_by_npp = self.acp.group_by_npp(tb_raw, entry_npp, entry_bs)
+        # pprint.pprint(tb_by_npp, width=200)
         # count unique companies
         count_companies = self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp, enrty_kd=enrty_kd)
         # get specific_weight
