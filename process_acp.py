@@ -3,7 +3,6 @@
 from typing import Tuple
 from openpyxl import load_workbook
 from openpyxl import Workbook
-import pprint
 
 
 class Acp:
@@ -79,20 +78,23 @@ class Acp:
         wb = load_workbook(file_name)
         sheet = wb["Sheet"]
         sheet.title = "Specific weight"
+        for level in table.keys():
+            for market in table[level].keys():
+                sheet = wb.create_sheet(level + " " + market)
+                for col_id, data in enumerate(['SORT', 'KD', 'BS_KD', 'BS', 'PERCENT_KD'], start=1):
+                    sheet.cell(row=1, column=col_id).value = data
+                i = 2
+                for npp, rows in table[level][market].items():
+                    for kd, row in rows.items():
+                        sheet.cell(row=i, column=1).value = npp
+                        sheet.cell(row=i, column=2).value = kd
+                        sheet.cell(row=i, column=3).value = row[0]
+                        sheet.cell(row=i, column=4).value = row[1]
+                        sheet.cell(row=i, column=5).value = row[2]
+                        i += 1
+        wb.remove_sheet(wb.get_sheet_by_name("Specific weight"))
+
         sheet_2 = wb.create_sheet("Count kd")
-
-        for col_id, data in enumerate(['SORT', 'KD', 'BS_KD', 'BS', 'PERCENT_KD'], start=1):
-            sheet.cell(row=1, column=col_id).value = data
-
-        i = 2
-        for npp, rows in table.items():
-            for kd, row in rows.items():
-                sheet.cell(row=i, column=1).value = npp
-                sheet.cell(row=i, column=2).value = kd
-                sheet.cell(row=i, column=3).value = row[0]
-                sheet.cell(row=i, column=4).value = row[1]
-                sheet.cell(row=i, column=5).value = row[2]
-                i += 1
 
         for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
             sheet_2.cell(row=1, column=col_id).value = data
