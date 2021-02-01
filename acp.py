@@ -83,7 +83,7 @@ class Run:
         entry_npp = {}
         if not self.path:
             return
-        entry_npp["Specific weight"] = int(self.entry_npp.get()) - 1
+        entry_npp["SW"] = int(self.entry_npp.get()) - 1
         enrty_kd = int(self.enrty_kd.get()) - 1
         entry_bs = int(self.entry_bs.get()) - 1
         entry_rf = int(self.enrty_rf.get()) - 1
@@ -92,21 +92,21 @@ class Run:
         self.window.update()
 
         # get table from excel file
-        tb_raw["Specific weight"] = {}
-        tb_raw["Specific weight"]["0"] = []
-        tb_title, tb_raw["Specific weight"]["0"] = self.acp.load_table(filepath=self.path)
+        tb_raw["SW"] = {}
+        tb_raw["SW"]["0"] = []
+        tb_title, tb_raw["SW"]["0"] = self.acp.load_table(filepath=self.path)
 
         # redefined tb_raw and entry_npp
         if self.catalog_path != "":
             for catalog_level in self.catalog_levels:
                 if self.check_states[catalog_level].get():
-                    tb_raw["Specific weight " + catalog_level] = {}
-                    res, entry_npp["Specific weight " + catalog_level], tb_raw["Specific weight " + catalog_level]["0"], not_found_codes = self.catalog.rebuild_tabl(
-                        entry_npp=entry_npp["Specific weight"],
+                    tb_raw["SW " + catalog_level] = {}
+                    res, entry_npp["SW " + catalog_level], tb_raw["SW " + catalog_level]["0"], not_found_codes = self.catalog.rebuild_tabl(
+                        entry_npp=entry_npp["SW"],
                         selected_level=catalog_level,
                         levels=self.catalog_levels,
                         catalog_content=self.catalog_content,
-                        raw_tabl=tb_raw["Specific weight"]["0"])
+                        raw_tabl=tb_raw["SW"]["0"])
                     if not res:
                         message = "\n".join(not_found_codes)
                         messagebox.showerror(title="ERROR", message="Was not fount in catalogue:\n" + message)
@@ -126,7 +126,9 @@ class Run:
             tb_by_npp[level]["2"] = self.acp.group_by_npp(tb_raw[level]["2"], entry_npp[level], entry_bs)
 
         # count unique companies
-        count_companies = self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp["Specific weight"]["0"], enrty_kd=enrty_kd)
+        count_companies = {"0": self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp["SW"]["0"], enrty_kd=enrty_kd),
+                           "1": self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp["SW"]["1"], enrty_kd=enrty_kd),
+                           "2": self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp["SW"]["2"], enrty_kd=enrty_kd)}
 
         # get specific_weight
         tb_specific_waight = {}

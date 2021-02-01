@@ -95,15 +95,29 @@ class Acp:
                         sheet.cell(row=i, column=4).value = row[1]
                         sheet.cell(row=i, column=5).value = row[2]
                         i += 1
+            sheet_0 = wb.create_sheet(level + " COUNT_KD 0")
+            for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
+                sheet_0.cell(row=1, column=col_id).value = data
+            i = 2
+            for npp, count in table_count["0"].items():
+                sheet_0.cell(row=i, column=1).value = npp
+                sheet_0.cell(row=i, column=2).value = count
+                i += 1
+            sheet_1 = wb.create_sheet(level + " COUNT_KD 1")
+            for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
+                sheet_1.cell(row=1, column=col_id).value = data
+            i = 2
+            for npp, count in table_count["1"].items():
+                sheet_1.cell(row=i, column=1).value = npp
+                sheet_1.cell(row=i, column=2).value = count
+                i += 1
+            sheet_2 = wb.create_sheet(level + " COUNT_KD 2")
+            for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
+                sheet_2.cell(row=1, column=col_id).value = data
+            i = 2
+            for npp, count in table_count["2"].items():
+                sheet_2.cell(row=i, column=1).value = npp
+                sheet_2.cell(row=i, column=2).value = count
+                i += 1
         wb.remove_sheet(wb.get_sheet_by_name("Specific weight"))
-
-        sheet_2 = wb.create_sheet("Count kd")
-
-        for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
-            sheet_2.cell(row=1, column=col_id).value = data
-        i = 2
-        for npp, count in table_count.items():
-            sheet_2.cell(row=i, column=1).value = npp
-            sheet_2.cell(row=i, column=2).value = count
-            i += 1
         wb.save(file_name)
