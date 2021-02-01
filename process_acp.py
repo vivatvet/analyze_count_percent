@@ -67,8 +67,11 @@ class Acp:
                 for row in rows:
                     if uniq_kd == row[entry_kd]:
                         kd_sum = kd_sum + float(row[entry_bs])
-                kd_percent = kd_sum / npp_sum * 100
-                sp_weight.setdefault(npp, {}).setdefault(uniq_kd, []).extend([kd_sum, npp_sum, round(kd_percent, 2)])
+                if npp_sum == 0:
+                    sp_weight.setdefault(npp, {}).setdefault(uniq_kd, []).extend([kd_sum, npp_sum, "NPP_SUM=0"])
+                else:
+                    kd_percent = kd_sum / npp_sum * 100
+                    sp_weight.setdefault(npp, {}).setdefault(uniq_kd, []).extend([kd_sum, npp_sum, round(kd_percent, 2)])
         return sp_weight
 
     @staticmethod
