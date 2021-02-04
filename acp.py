@@ -126,9 +126,12 @@ class Run:
             tb_by_npp[level]["2"] = self.acp.group_by_npp(tb_raw[level]["2"], entry_npp[level], entry_bs)
 
         # count unique companies
-        count_companies = {"0": self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp["SW"]["0"], enrty_kd=enrty_kd),
-                           "1": self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp["SW"]["1"], enrty_kd=enrty_kd),
-                           "2": self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp["SW"]["2"], enrty_kd=enrty_kd)}
+        count_companies = {}
+        for level in tb_by_npp.keys():
+            count_companies[level] = {}
+            count_companies[level]["0"] = self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp[level]["0"], enrty_kd=enrty_kd)
+            count_companies[level]["1"] = self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp[level]["1"], enrty_kd=enrty_kd)
+            count_companies[level]["2"] = self.acp.number_of_unique_companies(tabl_by_npp=tb_by_npp[level]["2"], enrty_kd=enrty_kd)
 
         # get specific_weight
         tb_specific_waight = {}

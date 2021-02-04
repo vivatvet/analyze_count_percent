@@ -99,7 +99,7 @@ class Acp:
             for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
                 sheet_0.cell(row=1, column=col_id).value = data
             i = 2
-            for npp, count in table_count["0"].items():
+            for npp, count in table_count[level]["0"].items():
                 sheet_0.cell(row=i, column=1).value = npp
                 sheet_0.cell(row=i, column=2).value = count
                 i += 1
@@ -107,7 +107,7 @@ class Acp:
             for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
                 sheet_1.cell(row=1, column=col_id).value = data
             i = 2
-            for npp, count in table_count["1"].items():
+            for npp, count in table_count[level]["1"].items():
                 sheet_1.cell(row=i, column=1).value = npp
                 sheet_1.cell(row=i, column=2).value = count
                 i += 1
@@ -115,7 +115,7 @@ class Acp:
             for col_id, data in enumerate(['SORT', 'COUNT_KD'], start=1):
                 sheet_2.cell(row=1, column=col_id).value = data
             i = 2
-            for npp, count in table_count["2"].items():
+            for npp, count in table_count[level]["2"].items():
                 sheet_2.cell(row=i, column=1).value = npp
                 sheet_2.cell(row=i, column=2).value = count
                 i += 1
